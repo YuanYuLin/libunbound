@@ -15,6 +15,7 @@ def set_global(args):
     global arch
     global src_usr_lib_dir
     global dst_usr_lib_dir
+    global dst_lib_dir
     global src_include_dir
     global dst_include_dir
     pkg_path = args["pkg_path"]
@@ -29,6 +30,7 @@ def set_global(args):
     else:
         sys.exit(1)
     dst_usr_lib_dir = ops.path_join(output_dir, "usr/lib")
+    dst_lib_dir = ops.path_join(output_dir, "lib")
 
     src_include_dir = iopc.getBaseRootFile("usr/include")
     dst_include_dir = ops.path_join("include",args["pkg_name"])
@@ -41,11 +43,12 @@ def MAIN_ENV(args):
 def MAIN_EXTRACT(args):
     set_global(args)
 
-    ops.mkdir(dst_usr_lib_dir)
-    ops.copyto(ops.path_join(src_usr_lib_dir, "libunbound.so.2.4.3"), dst_usr_lib_dir)
-    ops.ln(dst_usr_lib_dir, "libunbound.so.2.4.3", "libunbound.so.2.4")
-    ops.ln(dst_usr_lib_dir, "libunbound.so.2.4.3", "libunbound.so.2")
-    ops.ln(dst_usr_lib_dir, "libunbound.so.2.4.3", "libunbound.so")
+    #ops.mkdir(dst_usr_lib_dir)
+    ops.mkdir(dst_lib_dir)
+    ops.copyto(ops.path_join(src_usr_lib_dir, "libunbound.so.2.4.3"), dst_lib_dir)
+    ops.ln(dst_lib_dir, "libunbound.so.2.4.3", "libunbound.so.2.4")
+    ops.ln(dst_lib_dir, "libunbound.so.2.4.3", "libunbound.so.2")
+    ops.ln(dst_lib_dir, "libunbound.so.2.4.3", "libunbound.so")
     return True
 
 def MAIN_PATCH(args, patch_group_name):
@@ -69,7 +72,7 @@ def MAIN_BUILD(args):
 def MAIN_INSTALL(args):
     set_global(args)
 
-    iopc.installBin(args["pkg_name"], ops.path_join(dst_usr_lib_dir, "."), "usr/lib") 
+    iopc.installBin(args["pkg_name"], ops.path_join(dst_lib_dir, "."), "lib") 
     return False
 
 def MAIN_CLEAN_BUILD(args):
