@@ -17,6 +17,7 @@ def set_global(args):
     global dst_usr_lib_dir
     global dst_lib_dir
     global src_include_dir
+    global tmp_include_dir
     global dst_include_dir
     pkg_path = args["pkg_path"]
     output_dir = args["output_path"]
@@ -33,6 +34,7 @@ def set_global(args):
     dst_lib_dir = ops.path_join(output_dir, "lib")
 
     src_include_dir = iopc.getBaseRootFile("usr/include")
+    tmp_include_dir = ops.path_join(output_dir, ops.path_join("include",args["pkg_name"]))
     dst_include_dir = ops.path_join("include",args["pkg_name"])
 
 
@@ -49,6 +51,9 @@ def MAIN_EXTRACT(args):
     ops.ln(dst_lib_dir, "libunbound.so.2.4.3", "libunbound.so.2.4")
     ops.ln(dst_lib_dir, "libunbound.so.2.4.3", "libunbound.so.2")
     ops.ln(dst_lib_dir, "libunbound.so.2.4.3", "libunbound.so")
+
+    ops.mkdir(tmp_include_dir)
+    ops.copyto(ops.path_join(src_include_dir, 'unbound.h'), tmp_include_dir)
     return True
 
 def MAIN_PATCH(args, patch_group_name):
@@ -72,7 +77,21 @@ def MAIN_BUILD(args):
 def MAIN_INSTALL(args):
     set_global(args)
 
+    iopc.installBin(args["pkg_name"], ops.path_join(tmp_include_dir, "."), dst_include_dir)
     iopc.installBin(args["pkg_name"], ops.path_join(dst_lib_dir, "."), "lib") 
+    return False
+
+def MAIN_SDKENV(args):
+    set_global(args)
+
+    cflags = ""
+    cflags += " -I" + ops.path_join(iopc.getSdkPath(), 'usr/include/' + args["pkg_name"])
+    iopc.add_includes(cflags)
+
+    libs = ""
+    libs += " -lunbound"
+    iopc.add_libs(libs)
+
     return False
 
 def MAIN_CLEAN_BUILD(args):
