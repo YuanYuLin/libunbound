@@ -47,10 +47,11 @@ def MAIN_EXTRACT(args):
 
     #ops.mkdir(dst_usr_lib_dir)
     ops.mkdir(dst_lib_dir)
-    ops.copyto(ops.path_join(src_usr_lib_dir, "libunbound.so.2.4.3"), dst_lib_dir)
-    ops.ln(dst_lib_dir, "libunbound.so.2.4.3", "libunbound.so.2.4")
-    ops.ln(dst_lib_dir, "libunbound.so.2.4.3", "libunbound.so.2")
-    ops.ln(dst_lib_dir, "libunbound.so.2.4.3", "libunbound.so")
+    lib_so = "libunbound.so.2.2.1"
+    ops.copyto(ops.path_join(src_usr_lib_dir, lib_so), dst_lib_dir)
+    ops.ln(dst_lib_dir, lib_so, "libunbound.so.2.2")
+    ops.ln(dst_lib_dir, lib_so, "libunbound.so.2")
+    ops.ln(dst_lib_dir, lib_so, "libunbound.so")
 
     ops.mkdir(tmp_include_dir)
     ops.copyto(ops.path_join(src_include_dir, 'unbound.h'), tmp_include_dir)
